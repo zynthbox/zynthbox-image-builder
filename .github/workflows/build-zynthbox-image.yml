@@ -24,7 +24,10 @@ jobs:
           mountdir=$(mktemp -d)
 
           # Ensuring key security
-
+          mkdir -p ~/.ssh
+          echo "${{ secrets.HOST_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan ${{secrets.HOSTNAME}} >> ~/.ssh/known_hosts
 
           # Update and install dependencies
           echo "# Update and install dependencies"
