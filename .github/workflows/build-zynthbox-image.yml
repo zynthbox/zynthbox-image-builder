@@ -17,8 +17,8 @@ jobs:
       - name: Install dependencies
         run: |
           set -x
-          apt-get update
-          apt-get install -y openssh-client
+          sudo apt-get update
+          sudo apt-get install -y openssh-client
 
       - name: Build image
         run: |
@@ -37,8 +37,8 @@ jobs:
 
           # Update and install dependencies
           echo "# Update and install dependencies"
-          apt-get update
-          apt-get install -y coreutils p7zip-full qemu-user-static sudo git wget curl python3 lsof fdisk xz-utils openssh-client jq zip binutils
+          sudo apt-get update
+          sudo apt-get install -y coreutils p7zip-full qemu-user-static sudo git wget curl python3 lsof fdisk xz-utils openssh-client jq zip binutils
 
           # Clone repositories required to generate zynthbox image
           echo "# Clone repositories required to generate zynthbox image"
