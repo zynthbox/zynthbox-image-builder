@@ -25,7 +25,7 @@ jobs:
 
           # Ensuring key security
           - echo "Ensuring key security"
-          - chmod 600 ${{ secrets.SSH_KEY_PUB_ZYNTHBOX_IO }}
+          - chmod 600 ${{ secrets.HOST_SSH_KEY }}
 
           # Update and install dependencies
           - echo "# Update and install dependencies"
@@ -38,7 +38,7 @@ jobs:
           - git clone https://github.com/zynthbox/ZynthianOS.git
 
           # Download raspios base image
-          - wget -c --trust-server-names 'https://pub.zynthbox.io/.base-images/2024-03-15-raspios-bookworm-arm64-lite.img.xz'
+          - wget -c --trust-server-names 'https://${{secrets.HOSTNAME}}/${{secrets.BASE_IMAGE_PATH}}'
           - mv ./*-raspios-*.img.xz ./ZynthianOS/src/image
 
           # Setup Zynthbox Repo sourceline
@@ -54,8 +54,8 @@ jobs:
           - mv ./workspace/*.img ./workspace/$image_name
           - echo "Image Size -> $(du -h ./workspace/$image_name)"
 
-          # Compress image with xz and push to pub.zynthbox.io
-          - echo "# Pushing compressed image to pub.zynthbox.io"
-          - xz -zv --threads=12 --memory=100% ./workspace/$image_name -c | ssh -i "${{ secrets.SSH_KEY_PUB_ZYNTHBOX_IO }}" -o "StrictHostKeyChecking no" zynthbox@pub.zynthbox.io "cat > ISOs/.ci-testing-isos/$image_name.xz"
-          - ssh -i "${{ secrets.SSH_KEY_PUB_ZYNTHBOX_IO }}" -o "StrictHostKeyChecking no" zynthbox@pub.zynthbox.io "md5sum ISOs/.ci-testing-isos/$image_name.xz > ISOs/.ci-testing-isos/$image_name.xz.md5sum.txt"
+          # Compress image with xz and push
+          - echo "# Pushing compressed image"
+          - xz -zv --threads=12 --memory=100% ./workspace/$image_name -c | ssh -i "${{ secrets.HOST_SSH_KEY }}" -o "StrictHostKeyChecking no" ${{secrets.USERNAME}}@${{secrets.HOSTNAME}} "cat > ${{secrets.IMAGE_PATH}}/$image_name.xz"
+          - ssh -i "${{ secrets.HOST_SSH_KEY }}" -o "StrictHostKeyChecking no" ${{secrets.USERNAME}}@${{secrets.HOSTNAME}} "md5sum ${{secrets.IMAGE_PATH}}/$image_name.xz > ${{secrets.IMAGE_PATH}}/$image_name.xz.md5sum.txt"
 
