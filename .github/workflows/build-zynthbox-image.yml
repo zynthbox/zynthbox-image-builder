@@ -58,7 +58,7 @@ jobs:
           echo "# Building zynthbox image"
           cd ./ZynthianOS/src
           ../../CustomPiOS/src/update-custompios-paths
-          bash -x ./build_dist
+          sudo bash -x ./build_dist
           mv ./workspace/*.img ./workspace/$image_name
           echo "Image Size -> $(du -h ./workspace/$image_name)"
 
