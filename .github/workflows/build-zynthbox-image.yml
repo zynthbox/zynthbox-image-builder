@@ -16,46 +16,46 @@ jobs:
       
       - name: Build image
         run: |
-          - set -x
+          set -x
 
-          - debian_release_name="bookworm"
-          - image_name="$(date "+%F_%H%M")-zynthboxos-${debian_release_name}-arm64.img"
-          - log_file_name="$image_name.build.log"
-          - mountdir=$(mktemp -d)
+          debian_release_name="bookworm"
+          image_name="$(date "+%F_%H%M")-zynthboxos-${debian_release_name}-arm64.img"
+          log_file_name="$image_name.build.log"
+          mountdir=$(mktemp -d)
 
           # Ensuring key security
-          - echo "Ensuring key security"
-          - chmod 600 ${{ secrets.HOST_SSH_KEY }}
+          echo "Ensuring key security"
+          chmod 600 ${{ secrets.HOST_SSH_KEY }}
 
           # Update and install dependencies
-          - echo "# Update and install dependencies"
-          - apt-get update
-          - apt-get install -y coreutils p7zip-full qemu-user-static sudo git wget curl python3 lsof fdisk xz-utils openssh-client jq zip binutils
+          echo "# Update and install dependencies"
+          apt-get update
+          apt-get install -y coreutils p7zip-full qemu-user-static sudo git wget curl python3 lsof fdisk xz-utils openssh-client jq zip binutils
 
           # Clone repositories required to generate zynthbox image
-          - echo "# Clone repositories required to generate zynthbox image"
-          - git clone https://github.com/zynthbox/CustomPiOS.git
-          - git clone https://github.com/zynthbox/ZynthianOS.git
+          echo "# Clone repositories required to generate zynthbox image"
+          git clone https://github.com/zynthbox/CustomPiOS.git
+          git clone https://github.com/zynthbox/ZynthianOS.git
 
           # Download raspios base image
-          - wget -c --trust-server-names 'https://${{secrets.HOSTNAME}}/${{secrets.BASE_IMAGE_PATH}}'
-          - mv ./*-raspios-*.img.xz ./ZynthianOS/src/image
+          wget -c --trust-server-names 'https://${{secrets.HOSTNAME}}/${{secrets.BASE_IMAGE_PATH}}'
+          mv ./*-raspios-*.img.xz ./ZynthianOS/src/image
 
           # Setup Zynthbox Repo sourceline
-          - echo "# Setup Zynthbox Repo sourceline"
-          - echo "ZYNTHIANOS_ZYNTHBOX_REPO_KEY_URL='https://repo.zynthbox.io/repo_key.pub'" >> ZynthianOS/src/modules/zynthianos/config
-          - echo "ZYNTHIANOS_ZYNTHBOX_REPO_SOURCELINE='deb http://repo.zynthbox.io/testing-${debian_release_name} ${debian_release_name} main'" >> ZynthianOS/src/modules/zynthianos/config
+          echo "# Setup Zynthbox Repo sourceline"
+          echo "ZYNTHIANOS_ZYNTHBOX_REPO_KEY_URL='https://repo.zynthbox.io/repo_key.pub'" >> ZynthianOS/src/modules/zynthianos/config
+          echo "ZYNTHIANOS_ZYNTHBOX_REPO_SOURCELINE='deb http://repo.zynthbox.io/testing-${debian_release_name} ${debian_release_name} main'" >> ZynthianOS/src/modules/zynthianos/config
 
           # Build zynthbox image
-          - echo "# Building zynthbox image"
-          - cd ./ZynthianOS/src
-          - ../../CustomPiOS/src/update-custompios-paths
-          - bash -x ./build_dist
-          - mv ./workspace/*.img ./workspace/$image_name
-          - echo "Image Size -> $(du -h ./workspace/$image_name)"
+          echo "# Building zynthbox image"
+          cd ./ZynthianOS/src
+          ../../CustomPiOS/src/update-custompios-paths
+          bash -x ./build_dist
+          mv ./workspace/*.img ./workspace/$image_name
+          echo "Image Size -> $(du -h ./workspace/$image_name)"
 
           # Compress image with xz and push
-          - echo "# Pushing compressed image"
-          - xz -zv --threads=12 --memory=100% ./workspace/$image_name -c | ssh -i "${{ secrets.HOST_SSH_KEY }}" -o "StrictHostKeyChecking no" ${{secrets.USERNAME}}@${{secrets.HOSTNAME}} "cat > ${{secrets.IMAGE_PATH}}/$image_name.xz"
-          - ssh -i "${{ secrets.HOST_SSH_KEY }}" -o "StrictHostKeyChecking no" ${{secrets.USERNAME}}@${{secrets.HOSTNAME}} "md5sum ${{secrets.IMAGE_PATH}}/$image_name.xz > ${{secrets.IMAGE_PATH}}/$image_name.xz.md5sum.txt"
+          echo "# Pushing compressed image"
+          xz -zv --threads=12 --memory=100% ./workspace/$image_name -c | ssh -i "${{ secrets.HOST_SSH_KEY }}" -o "StrictHostKeyChecking no" ${{secrets.USERNAME}}@${{secrets.HOSTNAME}} "cat > ${{secrets.IMAGE_PATH}}/$image_name.xz"
+          ssh -i "${{ secrets.HOST_SSH_KEY }}" -o "StrictHostKeyChecking no" ${{secrets.USERNAME}}@${{secrets.HOSTNAME}} "md5sum ${{secrets.IMAGE_PATH}}/$image_name.xz > ${{secrets.IMAGE_PATH}}/$image_name.xz.md5sum.txt"
 
