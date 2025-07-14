@@ -7,10 +7,6 @@ jobs:
   build:
     name: Build zynthbox image
     runs-on: ubuntu-22.04-arm
-    container:
-      image: ubuntu:22.04
-      env:
-        DEBIAN_FRONTEND: noninteractive
 
     steps:
       - name: Checkout repository
