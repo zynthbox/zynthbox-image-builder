@@ -65,5 +65,7 @@ jobs:
           # Compress image with xz and push
           echo "# Pushing compressed image"
           sudo xz -zv --threads=12 --memory=100% ./workspace/$image_name -c | ssh -i ~/.ssh/id_rsa -o "StrictHostKeyChecking no" ${{secrets.USERNAME}}@${{secrets.HOSTNAME}} "cat > ${{secrets.IMAGE_PATH}}/$image_name.xz"
-          ssh -i ~/.ssh/id_rsa -o "StrictHostKeyChecking no" ${{secrets.USERNAME}}@${{secrets.HOSTNAME}} "md5sum ${{secrets.IMAGE_PATH}}/$image_name.xz > ${{secrets.IMAGE_PATH}}/$image_name.xz.md5sum.txt"
+          ssh -i ~/.ssh/id_rsa -o "StrictHostKeyChecking no" \
+            "${{secrets.USERNAME}}@${{secrets.HOSTNAME}}" \
+            "cd ${{secrets.IMAGE_PATH}} && md5sum $image_name.xz > $image_name.xz.md5sum.txt"
 
