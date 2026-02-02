@@ -2,6 +2,17 @@ name: Build zynthbox image
 
 on:
   workflow_dispatch:
+    inputs:
+      zynthianos_branch_name  :
+        description: 'ZynthianOS Branch Name'
+        default: 'main'
+        required: false
+        type: string
+      custompios_branch_name:
+        description: 'CustomPiOS Branch Name'
+        default: 'main'
+        required: false
+        type: string
 
 jobs:
   build:
