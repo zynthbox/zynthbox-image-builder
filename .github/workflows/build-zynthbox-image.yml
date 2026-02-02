@@ -53,8 +53,8 @@ jobs:
 
           # Clone repositories required to generate zynthbox image
           echo "# Clone repositories required to generate zynthbox image"
-          git clone https://github.com/zynthbox/CustomPiOS.git
-          git clone https://github.com/zynthbox/ZynthianOS.git
+          git clone -b ${{ github.event.inputs.custompios_branch_name }} https://github.com/zynthbox/CustomPiOS.git
+          git clone -b ${{ github.event.inputs.zynthianos_branch_name }} https://github.com/zynthbox/ZynthianOS.git
 
           # Download raspios base image
           wget -c --trust-server-names 'https://${{secrets.HOSTNAME}}/${{secrets.BASE_TRIXIE_IMAGE_PATH}}'
