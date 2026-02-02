@@ -46,7 +46,7 @@ jobs:
           git clone https://github.com/zynthbox/ZynthianOS.git
 
           # Download raspios base image
-          wget -c --trust-server-names 'https://${{secrets.HOSTNAME}}/${{secrets.BASE_IMAGE_PATH}}'
+          wget -c --trust-server-names 'https://${{secrets.HOSTNAME}}/${{secrets.BASE_BOOKWORM_IMAGE_PATH}}'
           mv ./*-raspios-*.img.xz ./ZynthianOS/src/image
 
           # Setup Zynthbox Repo sourceline
