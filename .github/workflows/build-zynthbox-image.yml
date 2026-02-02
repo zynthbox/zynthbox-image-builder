@@ -24,7 +24,7 @@ jobs:
         run: |
           set -x
 
-          debian_release_name="bookworm"
+          debian_release_name="trixie"
           image_name="$(date "+%F_%H%M")-zynthboxos-${debian_release_name}-arm64.img"
           log_file_name="$image_name.build.log"
           mountdir=$(mktemp -d)
@@ -46,7 +46,7 @@ jobs:
           git clone https://github.com/zynthbox/ZynthianOS.git
 
           # Download raspios base image
-          wget -c --trust-server-names 'https://${{secrets.HOSTNAME}}/${{secrets.BASE_BOOKWORM_IMAGE_PATH}}'
+          wget -c --trust-server-names 'https://${{secrets.HOSTNAME}}/${{secrets.BASE_TRIXIE_IMAGE_PATH}}'
           mv ./*-raspios-*.img.xz ./ZynthianOS/src/image
 
           # Setup Zynthbox Repo sourceline
