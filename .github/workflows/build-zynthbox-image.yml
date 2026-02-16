@@ -2,11 +2,25 @@ name: Build zynthbox image
 
 on:
   workflow_dispatch:
+    inputs:
+      # Add the feature branch names in the list to allow building from other branches
+      zynthianos_branch_name  :
+        description: 'ZynthianOS Branch Name'
+        default: 'main'
+        type: choice
+        options:
+          - main
+      custompios_branch_name:
+        description: 'CustomPiOS Branch Name'
+        default: 'main'
+        type: choice
+        options:
+          - main
 
 jobs:
   build:
     name: Build zynthbox image
-    runs-on: ubuntu-22.04-arm
+    runs-on: ubuntu-24.04-arm
 
     steps:
       - name: Checkout repository
@@ -24,7 +38,7 @@ jobs:
         run: |
           set -x
 
-          debian_release_name="bookworm"
+          debian_release_name="trixie"
           image_name="$(date "+%F_%H%M")-zynthboxos-${debian_release_name}-arm64.img"
           log_file_name="$image_name.build.log"
           mountdir=$(mktemp -d)
@@ -42,11 +56,11 @@ jobs:
 
           # Clone repositories required to generate zynthbox image
           echo "# Clone repositories required to generate zynthbox image"
-          git clone https://github.com/zynthbox/CustomPiOS.git
-          git clone https://github.com/zynthbox/ZynthianOS.git
+          git clone -b ${{ github.event.inputs.custompios_branch_name }} https://github.com/zynthbox/CustomPiOS.git
+          git clone -b ${{ github.event.inputs.zynthianos_branch_name }} https://github.com/zynthbox/ZynthianOS.git
 
           # Download raspios base image
-          wget -c --trust-server-names 'https://${{secrets.HOSTNAME}}/${{secrets.BASE_BOOKWORM_IMAGE_PATH}}'
+          wget -c --trust-server-names 'https://${{secrets.HOSTNAME}}/${{secrets.BASE_TRIXIE_IMAGE_PATH}}'
           mv ./*-raspios-*.img.xz ./ZynthianOS/src/image
 
           # Setup Zynthbox Repo sourceline
