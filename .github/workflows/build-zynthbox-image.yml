@@ -3,16 +3,19 @@ name: Build zynthbox image
 on:
   workflow_dispatch:
     inputs:
+      # Add the feature branch names in the list to allow building from other branches
       zynthianos_branch_name  :
         description: 'ZynthianOS Branch Name'
         default: 'main'
-        required: false
-        type: string
+        type: choice
+        options:
+          - main
       custompios_branch_name:
         description: 'CustomPiOS Branch Name'
         default: 'main'
-        required: false
-        type: string
+        type: choice
+        options:
+          - main
 
 jobs:
   build:
