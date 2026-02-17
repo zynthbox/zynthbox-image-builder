@@ -70,9 +70,10 @@ jobs:
           echo "ZYNTHIANOS_ZYNTHBOX_REPO_KEY_URL='https://repo.zynthbox.io/repo_key.pub'" >> ZynthianOS/src/modules/zynthianos/config
           echo "ZYNTHIANOS_ZYNTHBOX_REPO_SOURCELINE='deb http://repo.zynthbox.io/${APTLY_REPO}-${RELEASE} $RELEASE main'" >> ZynthianOS/src/modules/zynthianos/config
 
-          echo "APTLY_REPO='$APTLY_REPO'"
-          echo "RELEASE='$RELEASE'"
-
+          # Add testing sourceline if building unstable image
+          # Since unstable repo will only contain those packages with experimental or breaking changes. 
+          # Other required packages needs to be pulled from the testing repo so adding the testing sourceline as well to avoid build failure due to missing dependencies.
+          # The package verison in unstable repo will always be higher than the testing repo, so it will not cause any issue for stable image build.
           # Setup unstable repo sourceline conditionally
           if [ "$APTLY_REPO" = "unstable" ]; then
             echo "# Setup Zynthbox unstable repo sourceline"
