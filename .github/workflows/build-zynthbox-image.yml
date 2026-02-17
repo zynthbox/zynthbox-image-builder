@@ -21,6 +21,9 @@ jobs:
   build:
     name: Build zynthbox image
     runs-on: ubuntu-24.04-arm
+    env:
+      APTLY_REPO: unstable
+      RELEASE: trixie
 
     steps:
       - name: Checkout repository
@@ -38,9 +41,7 @@ jobs:
         run: |
           set -x
 
-          aptly_repo_name="unstable"
-          debian_release_name="trixie"
-          image_name="$(date "+%F_%H%M")-zynthboxos-${aptly_repo_name}-${debian_release_name}-arm64.img"
+          image_name="$(date "+%F_%H%M")-zynthboxos-${APTLY_REPO}-${RELEASE}-arm64.img"
           log_file_name="$image_name.build.log"
           mountdir=$(mktemp -d)
 
@@ -67,7 +68,14 @@ jobs:
           # Setup Zynthbox Repo sourceline
           echo "# Setup Zynthbox Repo sourceline"
           echo "ZYNTHIANOS_ZYNTHBOX_REPO_KEY_URL='https://repo.zynthbox.io/repo_key.pub'" >> ZynthianOS/src/modules/zynthianos/config
-          echo "ZYNTHIANOS_ZYNTHBOX_REPO_SOURCELINE='deb http://repo.zynthbox.io/${aptly_repo_name}-${debian_release_name} ${debian_release_name} main'" >> ZynthianOS/src/modules/zynthianos/config
+          echo "ZYNTHIANOS_ZYNTHBOX_REPO_SOURCELINE='deb http://repo.zynthbox.io/${APTLY_REPO}-${RELEASE} ${RELEASE} main'" >> ZynthianOS/src/modules/zynthianos/config
+
+          # Setup unstable repo sourceline conditionally
+          if [ "${APTLY_REPO}" = "unstable" ]; then
+            echo "# Setup Zynthbox unstable repo sourceline"
+            echo "ZYNTHIANOS_UNSTABLE_REPO_KEY_URL='https://repo.zynthbox.io/repo_key.pub'" >> ZynthianOS/src/modules/zynthianos/config
+            echo "ZYNTHIANOS_UNSTABLE_REPO_SOURCELINE='deb http://repo.zynthbox.io/${APTLY_REPO}-${RELEASE} ${RELEASE} main'" >> ZynthianOS/src/modules/zynthianos/config
+          fi
 
           # Build zynthbox image
           echo "# Building zynthbox image"
