@@ -70,6 +70,9 @@ jobs:
           echo "ZYNTHIANOS_ZYNTHBOX_REPO_KEY_URL='https://repo.zynthbox.io/repo_key.pub'" >> ZynthianOS/src/modules/zynthianos/config
           echo "ZYNTHIANOS_ZYNTHBOX_REPO_SOURCELINE='deb http://repo.zynthbox.io/${APTLY_REPO}-${RELEASE} $RELEASE main'" >> ZynthianOS/src/modules/zynthianos/config
 
+          echo "APTLY_REPO='$APTLY_REPO'"
+          echo "RELEASE='$RELEASE'"
+
           # Setup unstable repo sourceline conditionally
           if [ "$APTLY_REPO" = "unstable" ]; then
             echo "# Setup Zynthbox unstable repo sourceline"
