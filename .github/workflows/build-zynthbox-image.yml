@@ -68,13 +68,13 @@ jobs:
           # Setup Zynthbox Repo sourceline
           echo "# Setup Zynthbox Repo sourceline"
           echo "ZYNTHIANOS_ZYNTHBOX_REPO_KEY_URL='https://repo.zynthbox.io/repo_key.pub'" >> ZynthianOS/src/modules/zynthianos/config
-          echo "ZYNTHIANOS_ZYNTHBOX_REPO_SOURCELINE='deb http://repo.zynthbox.io/${APTLY_REPO}-${RELEASE} ${RELEASE} main'" >> ZynthianOS/src/modules/zynthianos/config
+          echo "ZYNTHIANOS_ZYNTHBOX_REPO_SOURCELINE='deb http://repo.zynthbox.io/${{env.APTLY_REPO}}-${{env.RELEASE}} ${{env.RELEASE}} main'" >> ZynthianOS/src/modules/zynthianos/config
 
           # Setup unstable repo sourceline conditionally
-          if [ "${APTLY_REPO}" = "unstable" ]; then
+          if [ "${{env.APTLY_REPO}}" = "unstable" ]; then
             echo "# Setup Zynthbox unstable repo sourceline"
             echo "ZYNTHIANOS_UNSTABLE_REPO_KEY_URL='https://repo.zynthbox.io/repo_key.pub'" >> ZynthianOS/src/modules/zynthianos/config
-            echo "ZYNTHIANOS_UNSTABLE_REPO_SOURCELINE='deb http://repo.zynthbox.io/${APTLY_REPO}-${RELEASE} ${RELEASE} main'" >> ZynthianOS/src/modules/zynthianos/config
+            echo "ZYNTHIANOS_UNSTABLE_REPO_SOURCELINE='deb http://repo.zynthbox.io/${{env.APTLY_REPO}}-${{env.RELEASE}} ${{env.RELEASE}} main'" >> ZynthianOS/src/modules/zynthianos/config
           fi
 
           # Build zynthbox image
