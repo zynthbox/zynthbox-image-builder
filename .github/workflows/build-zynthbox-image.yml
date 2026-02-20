@@ -3,6 +3,21 @@ name: Build zynthbox image
 on:
   workflow_dispatch:
     inputs:
+      aptly_repo:
+        description: 'Aptly repo to upload debs to'
+        required: true
+        default: 'testing'
+        type: choice
+        options:
+          - testing
+          - unstable
+      release:
+        description: 'Release to build for'
+        required: true
+        default: 'trixie'
+        type: choice
+        options:
+          - trixie
       # Add the feature branch names in the list to allow building from other branches
       zynthianos_branch_name  :
         description: 'ZynthianOS Branch Name'
@@ -22,8 +37,8 @@ jobs:
     name: Build zynthbox image
     runs-on: ubuntu-24.04-arm
     env:
-      APTLY_REPO: unstable
-      RELEASE: trixie
+      APTLY_REPO: ${{ github.event.inputs.aptly_repo }}
+      RELEASE: ${{ github.event.inputs.release }}
 
     steps:
       - name: Checkout repository
