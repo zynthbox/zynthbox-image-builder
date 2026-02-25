@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       aptly_repo:
-        description: 'Aptly repo to upload debs to'
+        description: 'Aptly repo to build image with'
         required: true
         default: 'testing'
         type: choice
