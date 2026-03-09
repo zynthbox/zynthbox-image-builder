@@ -58,8 +58,6 @@ jobs:
 
           # Set image build date time to zynthianos config
           ZYNTHBOX_IMAGE_BUILD_DATETIME=$(date +%Y-%m-%d_%H-%M)
-          echo "ZYNTHBOX_IMAGE_BUILD_DATETIME=$ZYNTHBOX_IMAGE_BUILD_DATETIME" >> ZynthianOS/src/modules/zynthianos/config
-
           image_name="$ZYNTHBOX_IMAGE_BUILD_DATETIME-zynthboxos-${APTLY_REPO}-${RELEASE}-arm64.img"
           log_file_name="$image_name.build.log"
           mountdir=$(mktemp -d)
@@ -99,6 +97,9 @@ jobs:
             echo "ZYNTHIANOS_UNSTABLE_REPO_KEY_URL='https://repo.zynthbox.io/repo_key.pub'" >> ZynthianOS/src/modules/zynthianos/config
             echo "ZYNTHIANOS_UNSTABLE_REPO_SOURCELINE='deb http://repo.zynthbox.io/testing-${RELEASE} $RELEASE main'" >> ZynthianOS/src/modules/zynthianos/config
           fi
+
+          # Set image build date time to zynthianos config
+          echo "ZYNTHBOX_IMAGE_BUILD_DATETIME=$ZYNTHBOX_IMAGE_BUILD_DATETIME" >> ZynthianOS/src/modules/zynthianos/config
 
           # Build zynthbox image
           echo "# Building zynthbox image"
