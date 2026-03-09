@@ -56,7 +56,11 @@ jobs:
         run: |
           set -x
 
-          image_name="$(date "+%F_%H%M")-zynthboxos-${APTLY_REPO}-${RELEASE}-arm64.img"
+          # Set image build date time to zynthianos config
+          ZYNTHBOX_IMAGE_BUILD_DATETIME=$(date +%Y-%m-%d_%H-%M)
+          echo "ZYNTHBOX_IMAGE_BUILD_DATETIME=$ZYNTHBOX_IMAGE_BUILD_DATETIME" >> ZynthianOS/src/modules/zynthianos/config
+
+          image_name="$ZYNTHBOX_IMAGE_BUILD_DATETIME-zynthboxos-${APTLY_REPO}-${RELEASE}-arm64.img"
           log_file_name="$image_name.build.log"
           mountdir=$(mktemp -d)
 
