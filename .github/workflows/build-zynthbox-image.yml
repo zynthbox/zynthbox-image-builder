@@ -19,8 +19,8 @@ on:
         options:
           - trixie
       # Add the feature branch names in the list to allow building from other branches
-      zynthianos_branch_name  :
-        description: 'ZynthianOS Branch Name'
+      zynthboxos_branch_name  :
+        description: 'ZynthboxOS Branch Name'
         default: 'main'
         type: choice
         options:
@@ -56,9 +56,9 @@ jobs:
         run: |
           set -x
 
-          # Set image build date time to zynthianos config
-          ZYNTHBOX_IMAGE_BUILD_DATETIME=$(date +%Y-%m-%d_%H-%M)
-          image_name="$ZYNTHBOX_IMAGE_BUILD_DATETIME-zynthboxos-${APTLY_REPO}-${RELEASE}-arm64.img"
+          # Set image build date time to zynthboxos config
+          ZYNTHBOXOS_IMAGE_BUILD_DATETIME=$(date +%Y-%m-%d_%H-%M)
+          image_name="$ZYNTHBOXOS_IMAGE_BUILD_DATETIME-zynthboxos-${APTLY_REPO}-${RELEASE}-arm64.img"
           log_file_name="$image_name.build.log"
           mountdir=$(mktemp -d)
 
@@ -76,16 +76,16 @@ jobs:
           # Clone repositories required to generate zynthbox image
           echo "# Clone repositories required to generate zynthbox image"
           git clone -b ${{ github.event.inputs.custompios_branch_name }} https://github.com/zynthbox/CustomPiOS.git
-          git clone -b ${{ github.event.inputs.zynthianos_branch_name }} https://github.com/zynthbox/ZynthianOS.git
+          git clone -b ${{ github.event.inputs.zynthboxos_branch_name }} https://github.com/zynthbox/ZynthboxOS.git
 
           # Download raspios base image
           wget -c --trust-server-names 'https://${{secrets.HOSTNAME}}/${{secrets.BASE_TRIXIE_IMAGE_PATH}}'
-          mv ./*-raspios-*.img.xz ./ZynthianOS/src/image
+          mv ./*-raspios-*.img.xz ./ZynthboxOS/src/image
 
           # Setup Zynthbox Repo sourceline
           echo "# Setup Zynthbox Repo sourceline"
-          echo "ZYNTHIANOS_ZYNTHBOX_REPO_KEY_URL='https://repo.zynthbox.io/repo_key.pub'" >> ZynthianOS/src/modules/zynthianos/config
-          echo "ZYNTHIANOS_ZYNTHBOX_REPO_SOURCELINE='deb http://repo.zynthbox.io/${APTLY_REPO}-${RELEASE} $RELEASE main'" >> ZynthianOS/src/modules/zynthianos/config
+          echo "ZYNTHBOXOS_ZYNTHBOX_REPO_KEY_URL='https://repo.zynthbox.io/repo_key.pub'" >> ZynthboxOS/src/modules/zynthboxos/config
+          echo "ZYNTHBOXOS_ZYNTHBOX_REPO_SOURCELINE='deb http://repo.zynthbox.io/${APTLY_REPO}-${RELEASE} $RELEASE main'" >> ZynthboxOS/src/modules/zynthboxos/config
 
           # Add testing sourceline if building unstable image
           # Since unstable repo will only contain those packages with experimental or breaking changes. 
@@ -94,16 +94,16 @@ jobs:
           # Setup unstable repo sourceline conditionally
           if [ "$APTLY_REPO" = "unstable" ]; then
             echo "# Setup Zynthbox unstable repo sourceline"
-            echo "ZYNTHIANOS_UNSTABLE_REPO_KEY_URL='https://repo.zynthbox.io/repo_key.pub'" >> ZynthianOS/src/modules/zynthianos/config
-            echo "ZYNTHIANOS_UNSTABLE_REPO_SOURCELINE='deb http://repo.zynthbox.io/testing-${RELEASE} $RELEASE main'" >> ZynthianOS/src/modules/zynthianos/config
+            echo "ZYNTHBOXOS_UNSTABLE_REPO_KEY_URL='https://repo.zynthbox.io/repo_key.pub'" >> ZynthboxOS/src/modules/zynthboxos/config
+            echo "ZYNTHBOXOS_UNSTABLE_REPO_SOURCELINE='deb http://repo.zynthbox.io/testing-${RELEASE} $RELEASE main'" >> ZynthboxOS/src/modules/zynthboxos/config
           fi
 
-          # Set image build date time to zynthianos config
-          echo "ZYNTHBOX_IMAGE_BUILD_DATETIME=$ZYNTHBOX_IMAGE_BUILD_DATETIME" >> ZynthianOS/src/modules/zynthianos/config
+          # Set image build date time to zynthboxos config
+          echo "ZYNTHBOXOS_IMAGE_BUILD_DATETIME=$ZYNTHBOXOS_IMAGE_BUILD_DATETIME" >> ZynthboxOS/src/modules/zynthboxos/config
 
           # Build zynthbox image
           echo "# Building zynthbox image"
-          cd ./ZynthianOS/src
+          cd ./ZynthboxOS/src
           ../../CustomPiOS/src/update-custompios-paths
           sudo bash -x ./build_dist
           sudo mv ./workspace/*.img ./workspace/$image_name
