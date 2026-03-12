@@ -59,7 +59,7 @@ jobs:
           set -x
 
           # Set image build date time to zynthboxos config
-          ZYNTHBOXOS_IMAGE_BUILD_DATETIME=$(date +%Y-%m-%d_%H%M)
+          ZYNTHBOXOS_IMAGE_BUILD_DATETIME=$(date -u +%Y-%m-%d_%H%M)
           image_name="$ZYNTHBOXOS_IMAGE_BUILD_DATETIME-zynthboxos-${APTLY_REPO}-${RELEASE}-arm64.img"
           log_file_name="$image_name.build.log"
           mountdir=$(mktemp -d)
