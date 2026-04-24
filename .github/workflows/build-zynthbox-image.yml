@@ -82,7 +82,10 @@ jobs:
 
           # Download raspios base image
           wget -c --trust-server-names 'https://${{secrets.HOSTNAME}}/${{secrets.BASE_DEVUAN_IMAGE_PATH}}'
-          mv ./*-devuan-excalibur-*.img.xz ./ZynthboxOS/src/image
+          
+          # NOTE: This is required to maintain the same naming convention for the base image as expected by the zynthbox image build scripts, custompios and zynthboxos. 
+          # This should be replaced by a more generic name in the future to avoid confusion.
+          mv ./*-devuan-excalibur-*.img.xz ./ZynthboxOS/src/image/$(basename ./*-devuan-excalibur-*.img.xz .img.xz)-raspios.img.xz
 
           # Setup Zynthbox Repo sourceline
           echo "# Setup Zynthbox Repo sourceline"
