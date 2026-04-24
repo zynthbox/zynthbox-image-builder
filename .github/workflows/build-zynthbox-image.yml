@@ -81,8 +81,8 @@ jobs:
           git clone -b ${{ github.event.inputs.zynthboxos_branch_name }} https://github.com/zynthbox/ZynthboxOS.git
 
           # Download raspios base image
-          wget -c --trust-server-names 'https://${{secrets.HOSTNAME}}/${{secrets.BASE_TRIXIE_IMAGE_PATH}}'
-          mv ./*-raspios-*.img.xz ./ZynthboxOS/src/image
+          wget -c --trust-server-names 'https://${{secrets.HOSTNAME}}/${{secrets.BASE_DEVUAN_IMAGE_PATH}}'
+          mv ./*-devuan-excalibur-*.img.xz ./ZynthboxOS/src/image
 
           # Setup Zynthbox Repo sourceline
           echo "# Setup Zynthbox Repo sourceline"
